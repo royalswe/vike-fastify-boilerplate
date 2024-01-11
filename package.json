@@ -1,0 +1,26 @@
+{
+  "scripts": {
+    "dev": "npm run server:dev",
+    "dev:debug": "node --inspect -r ts-node/register/transpile-only --loader ts-node/esm ./server/index.ts",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build",
+    "server": "node --loader ts-node/esm ./server/index.ts",
+    "server:dev": "npm run server",
+    "server:prod": "cross-env NODE_ENV=production npm run server"
+  },
+  "dependencies": {
+    "@fastify/compress": "^6.5.0",
+    "@fastify/static": "^6.12.0",
+    "@fastify/middie": "^8.3.0",
+    "@types/node": "^20.11.0",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "cross-env": "^7.0.3",
+    "fastify": "^4.25.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vike": "^0.4.156",
+    "vue": "^3.4.10"
+  },
+  "type": "module"
+}
