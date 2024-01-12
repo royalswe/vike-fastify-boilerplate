@@ -22,7 +22,7 @@ const development = {
 };
 
 const production = {
-  logger: true
+  logger: false
 };
 
 buildServer();
@@ -59,10 +59,6 @@ async function buildServer() {
     await app.use(viteDevMiddleware);
   }
 
-  app.addHook("onRequest", async () => {
-    app.log.info("Got a request");
-  });
-
   app.get('*', async (request, reply) => {
     const pageContextInit = {
       urlOriginal: request.raw.url || ''
@@ -75,8 +71,7 @@ async function buildServer() {
     } else {
       const { statusCode, headers } = httpResponse;
       reply.status(statusCode);
-      headers.forEach(([name, value]) => reply.header(name, value));
-
+      headers.forEach(([name, value]) => reply.header(name, value));      
       httpResponse.pipe(reply.raw);
     }
   });
