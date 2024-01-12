@@ -69,10 +69,17 @@ async function buildServer() {
       reply.callNotFound();
       return;
     } else {
-      const { statusCode, headers } = httpResponse;
-      reply.status(statusCode);
-      headers.forEach(([name, value]) => reply.header(name, value));      
-      httpResponse.pipe(reply.raw);
+      const { contentType, statusCode, headers } = httpResponse;
+      headers.forEach(([name, value]) => reply.header(name, value));
+
+      return reply
+        .status(statusCode)
+        .header('Content-Type', 'charset=utf-8')
+        .type(contentType)
+        .send(await httpResponse.getNodeStream());
+
+      // if reply string
+      // httpResponse.pipe(reply.raw)
     }
   });
 

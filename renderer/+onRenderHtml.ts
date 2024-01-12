@@ -4,7 +4,7 @@ export { onRenderHtml };
 import type { App } from 'vue';
 import type { OnRenderHtmlAsync } from 'vike/types';
 
-import { renderToString as renderToString_ } from 'vue/server-renderer';
+import { renderToNodeStream, renderToString as renderToString_ } from 'vue/server-renderer';
 import { escapeInject, dangerouslySkipEscape } from 'vike/server';
 import { createApp } from './app';
 import logoUrl from './logo.svg';
@@ -16,7 +16,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
   if (!Page) throw new Error('My render() hook expects pageContext.Page to be defined');
   const app = createApp(Page, pageContext);
 
-  const appHtml = await renderToString(app);
+  const appHtml = renderToNodeStream(app);
 
   // See https://vike.dev/head
   const { documentProps } = pageContext.exports;
@@ -33,7 +33,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRender
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
+        <div id="app">${appHtml}</div>
       </body>
     </html>`;
 
