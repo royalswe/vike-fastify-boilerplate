@@ -1,12 +1,12 @@
 import Fastify from 'fastify';
-import middie from '@fastify/middie';
 import { renderPage } from 'vike/server';
 import { root } from './root.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const development = {
-  logger: {
+  logger:
+  {
     transport: {
       target: 'pino-pretty',
       options: {
@@ -15,6 +15,7 @@ const development = {
       },
     },
   },
+  http2: true,
   https: {
     key: (await import('fs')).readFileSync('cert/dev.pem'),
     cert: (await import('fs')).readFileSync('cert/cert.pem'),
@@ -46,7 +47,6 @@ async function buildServer() {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our production server.)
-    await app.register(middie);
 
     const vite = await import('vite');
     const viteDevMiddleware = (
@@ -56,7 +56,13 @@ async function buildServer() {
         },
       })
     ).middlewares;
-    await app.use(viteDevMiddleware);
+
+    app.addHook('onRequest', async (request, reply) => {
+      const next = () => new Promise<void>((resolve) => {
+        viteDevMiddleware(request.raw, reply.raw, () => resolve());
+      });
+      await next();
+    });
   }
 
   app.get('*', async (request, reply) => {
@@ -69,14 +75,11 @@ async function buildServer() {
       reply.callNotFound();
       return;
     } else {
-      const { contentType, statusCode, headers } = httpResponse;
+      const { statusCode, headers } = httpResponse;
       headers.forEach(([name, value]) => reply.header(name, value));
 
-      return reply
-        .status(statusCode)
-        .header('Content-Type', 'charset=utf-8')
-        .type(contentType)
-        .send(await httpResponse.getNodeStream());
+      const body = await httpResponse.getBody();
+      return reply.status(statusCode).send(body);
 
       // if reply string
       // httpResponse.pipe(reply.raw)
@@ -90,11 +93,12 @@ async function main() {
   const fastify = await buildServer();
 
   const port = process.env.PORT || 3000;
-  fastify.listen({ port: +port }, function (err) {
+  fastify.listen({ port: +port }, function (err, address) {
     if (err) {
       fastify.log.error(err);
       process.exit(1);
     }
+    console.log(`Server listening at ${address}`);
   });
 }
 
