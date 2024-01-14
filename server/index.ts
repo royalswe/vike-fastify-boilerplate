@@ -53,6 +53,15 @@ async function buildServer() {
       await vite.createServer({
         server: {
           middlewareMode: true,
+          https: {
+            key: (await import('fs')).readFileSync('cert/dev.pem'),
+            cert: (await import('fs')).readFileSync('cert/cert.pem'),
+          },
+          hmr: {
+            protocol: 'wss',
+            clientPort: 443,
+            port: 443,
+          }
         },
       })
     ).middlewares;
