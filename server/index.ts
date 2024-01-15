@@ -23,6 +23,7 @@ const development = {
 };
 
 const production = {
+  http2: true,
   logger: false
 };
 
@@ -86,12 +87,10 @@ async function buildServer() {
     } else {
       const { statusCode, headers } = httpResponse;
       headers.forEach(([name, value]) => reply.header(name, value));
+      reply.status(statusCode);
 
-      const body = await httpResponse.getBody();
-      return reply.status(statusCode).send(body);
-
-      // if reply string
-      // httpResponse.pipe(reply.raw)
+      httpResponse.pipe(reply.raw);
+      return reply;
     }
   });
 
