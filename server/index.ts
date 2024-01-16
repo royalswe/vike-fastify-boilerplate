@@ -23,7 +23,6 @@ const development = {
 };
 
 const production = {
-  http2: true,
   logger: false
 };
 
@@ -36,7 +35,6 @@ async function buildServer() {
 
   await app.register(import('@fastify/compress'), { global: true });
 
-  // Vite integration
   if (isProduction) {
     // In production, we need to serve our static assets ourselves.
     // (In dev, Vite's middleware serves our static assets.)
@@ -48,7 +46,6 @@ async function buildServer() {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our production server.)
-
     const vite = await import('vite');
     const viteDevMiddleware = (
       await vite.createServer({
@@ -67,6 +64,7 @@ async function buildServer() {
       })
     ).middlewares;
 
+    // this is middleware for vite's dev servert
     app.addHook('onRequest', async (request, reply) => {
       const next = () => new Promise<void>((resolve) => {
         viteDevMiddleware(request.raw, reply.raw, () => resolve());
