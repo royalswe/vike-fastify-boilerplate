@@ -26,8 +26,6 @@ const production = {
   logger: false
 };
 
-buildServer();
-
 async function buildServer() {
   const app = Fastify(
     isProduction ? production : development
@@ -55,11 +53,11 @@ async function buildServer() {
             key: (await import('fs')).readFileSync('cert/dev.pem'),
             cert: (await import('fs')).readFileSync('cert/cert.pem'),
           },
-          hmr: {
-            protocol: 'wss',
-            clientPort: 443,
-            port: 443,
-          }
+          // hmr: {
+          //   protocol: 'wss',
+          //   clientPort: 443,
+          //   port: 443,
+          // }
         },
       })
     ).middlewares;
