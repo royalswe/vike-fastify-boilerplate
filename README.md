@@ -13,7 +13,3 @@ If you do not want https then just remove
 install: `npm i`
 
 run: `npm run dev`
-
-Problems:
-
-when run in dev mode, the error `WebSocket server error: Port is already in use` displays on startup.  
