@@ -81,9 +81,8 @@ async function buildServer() {
       reply.callNotFound();
       return;
     } else {
-      const { statusCode, headers } = httpResponse;
-      headers.forEach(([name, value]) => reply.header(name, value));
-      reply.status(statusCode);
+      const { headers } = httpResponse;
+      headers.forEach(([name, value]) => reply.raw.setHeader(name, value));
 
       httpResponse.pipe(reply.raw);
       return reply;
