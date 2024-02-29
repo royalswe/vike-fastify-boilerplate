@@ -37,8 +37,8 @@ async function buildServer() {
     // In production, we need to serve our static assets ourselves.
     // (In dev, Vite's middleware serves our static assets.)
     await app.register(import('@fastify/static'), {
-      root: root + '/dist/client/assets',
-      prefix: '/assets/',
+      root: root + '/dist/client',
+      wildcard: false, // globs the filesystem for all defined files in the client folder
     });
   } else {
     // We instantiate Vite's development server and integrate its middleware to our server.
