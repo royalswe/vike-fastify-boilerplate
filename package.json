@@ -3,9 +3,11 @@
     "dev": "npm run server",
     "dev:debug": "tsx --inspect ./server/index.ts",
     "prod": "npm run build && npm run server:prod",
-    "build": "vite build",
+    "build": "vite build && npm run build:server",
+    "build:server": "tsc --build ./server",
     "server": "tsx ./server/index.ts",
     "server:prod": "cross-env NODE_ENV=production npm run server",
+    "preview": "cross-env NODE_ENV=production NODE_OPTIONS='--inspect' node ./dist/index.js"
   },
   "dependencies": {
     "@fastify/compress": "^7.0.0",
@@ -14,7 +16,7 @@
     "cross-env": "^7.0.3",
     "fastify": "^4.26.1",
     "tsx": "^4.7.1",
-    "vike": "^0.4.164",
+    "vike": "^0.4.165",
     "vite": "^5.1.4",
     "vue": "^3.4.21"
   },
