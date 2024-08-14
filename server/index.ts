@@ -82,17 +82,8 @@ async function buildServer() {
       return;
     } else {
       const { statusCode, headers } = httpResponse;
-      headers.forEach(([name, value]) => reply.raw.setHeader(name, value));
-
-      reply.status(statusCode);
-
-      // Stream the response into the response object.
-      // NOTE: This will not be compressed by @fastify/compress but is often faster.
-      httpResponse.pipe(reply.raw);
-
-      // Alternative: remove previous line and uncomment below
-      // This will be compressed by @fastify/compress and send the response in one chunk
-      // reply.send(await httpResponse.getBody());
+      headers.forEach(([name, value]) => reply.header(name, value));
+      reply.send(await httpResponse.getReadableNodeStream());
 
       return reply;
     }
