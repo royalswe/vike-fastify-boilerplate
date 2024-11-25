@@ -1,14 +1,23 @@
 // https://vike.dev/onRenderClient
-export { onRenderClient }
+import type { PageContext } from 'vike/types';
+import type { App } from 'vue';
+import { createApp } from './app';
 
-import { createApp } from './app'
-import type { OnRenderClientAsync } from 'vike/types'
+export { onRenderClient };
 
-// This onRenderClient() hook only supports SSR, see https://vike.dev/render-modes for how to modify onRenderClient()
-// to support SPA
-const onRenderClient: OnRenderClientAsync = async (pageContext): ReturnType<OnRenderClientAsync> => {
-  const { Page } = pageContext
-  if (!Page) throw new Error('Client-side render() hook expects pageContext.Page to be defined')
-  const app = createApp(Page, pageContext)
-  app.mount('#app')
+// This onRenderClient() hook only supports SSR, see https://vike.dev/render-modes for how to modify onRenderClient() to support SPA
+let app: App<Element> & { changePage: (pageContext: PageContext) => void; };
+
+async function onRenderClient(pageContext: PageContext) {
+  if (!app) {
+    app = await createApp(pageContext);
+    app.mount('#app');
+  } else {
+    // Update language in i18n
+    // if app allready exists, just update pageContext
+    app.changePage(pageContext);
+  }
 }
+
+
+

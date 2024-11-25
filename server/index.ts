@@ -76,17 +76,16 @@ async function buildServer() {
       urlOriginal: request.raw.url || ''
     };
     const pageContext = await renderPage(pageContextInit);
-    const { httpResponse } = pageContext;
-    if (!httpResponse) {
-      reply.callNotFound();
-      return;
-    } else {
-      const { statusCode, headers } = httpResponse;
-      headers.forEach(([name, value]) => reply.header(name, value));
-      reply.send(await httpResponse.getReadableNodeStream());
+    const { statusCode, headers, getReadableNodeStream } =
+      pageContext.httpResponse;
 
-      return reply;
-    }
+    headers.forEach(([name, value]: [string, string]) =>
+      reply.header(name, value)
+    );
+    reply.status(statusCode).send(await getReadableNodeStream());
+
+    return reply;
+
   });
 
   return app;
