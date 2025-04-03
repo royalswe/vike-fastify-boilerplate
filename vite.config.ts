@@ -1,9 +1,10 @@
-import vue from '@vitejs/plugin-vue'
-import vike from 'vike/plugin'
-import { UserConfig } from 'vite'
+import vue from '@vitejs/plugin-vue';
+import vike from 'vike/plugin';
+import { defineConfig } from 'vite';
 
-const config: UserConfig = {
-  plugins: [vue(), vike()]
-}
-
-export default config
+export default defineConfig({
+  plugins: [vue(), vike()],
+  server: {
+    allowedHosts: true,
+  }
+});

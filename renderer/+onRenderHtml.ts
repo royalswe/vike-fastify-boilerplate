@@ -3,7 +3,7 @@ export { onRenderHtml };
 
 import type { OnRenderHtmlAsync } from 'vike/types';
 
-import { renderToNodeStream, renderToString as renderToString_ } from 'vue/server-renderer';
+import { renderToNodeStream } from 'vue/server-renderer';
 import { escapeInject } from 'vike/server';
 import { createApp } from './app';
 import logoUrl from './logo.svg';

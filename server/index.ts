@@ -44,28 +44,13 @@ async function buildServer() {
     // We instantiate Vite's development server and integrate its middleware to our server.
     // ⚠️ We instantiate it only in development. (It isn't needed in production and it
     // would unnecessarily bloat our production server.)
-    const vite = await import('vite');
-    const viteDevMiddleware = (
-      await vite.createServer({
-        server: {
-          middlewareMode: true,
-          https: {
-            key: (await import('fs')).readFileSync('cert/dev.pem'),
-            cert: (await import('fs')).readFileSync('cert/cert.pem'),
-          },
-          // hmr: {
-          //   protocol: 'wss',
-          //   clientPort: 443,
-          //   port: 443,
-          // }
-        },
-      })
-    ).middlewares;
+    const { createDevMiddleware } = await import('vike/server');
+    const { devMiddleware } = await createDevMiddleware();
 
     // this is middleware for vite's dev servert
     app.addHook('onRequest', async (request, reply) => {
       const next = () => new Promise<void>((resolve) => {
-        viteDevMiddleware(request.raw, reply.raw, () => resolve());
+        devMiddleware(request.raw, reply.raw, resolve);
       });
       await next();
     });

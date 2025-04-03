@@ -2,21 +2,13 @@
   "compilerOptions": {
     "strict": true,
     "module": "NodeNext",
-    "target": "ES2020",
+    "target": "ESNext",
     "moduleResolution": "NodeNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["ESNext"],
     "types": ["vite/client"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
     "outDir": "../dist",
-  },
-  "ts-node": {
-    "transpileOnly": true,
-    "esm": true,
-    "compilerOptions": {
-      "moduleResolution": "Node16",
-      "module": "Node16",
-    }
   }
 }
